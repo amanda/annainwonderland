@@ -28,14 +28,15 @@ def list_frequent(people_list):
 def equalize_list_length(first_list, second_list):
 	if len(first_list) >= len(second_list):
 		length = len(first_list)
-		longer = first_list
+		longer = first_lists
 		shorter = second_list
 	else:
 		length = len(second_list)
 		longer = second_list
 		shorter = first_list
-	for i in range(len(longer) - 1):
-		shorter.append(shorter[i]) #NOPE not this way
+	diff = len(longer) - len(shorter)
+	for i in range(diff):
+		shorter.append(shorter[i]) #check again
 	return length #for reference? 
 
 def make_cast(first_list, second_list):
