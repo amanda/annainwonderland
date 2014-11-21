@@ -26,23 +26,44 @@ def list_frequent(people_list):
 	return sorted_people
 
 def equalize_list_length(first_list, second_list):
+	'''makes the longer of two lists the length of the shorter,
+	used for to make a cast list'''
 	if len(first_list) >= len(second_list):
-		length = len(first_list)
-		longer = first_lists
+		length = len(second_list)
+		longer = first_list
 		shorter = second_list
 	else:
-		length = len(second_list)
+		length = len(first_list)
 		longer = second_list
 		shorter = first_list
 	diff = len(longer) - len(shorter)
 	for i in range(diff):
-		shorter.append(shorter[i]) #check again
-	return length #for reference? 
+		longer.pop(-i)
+	return length #for reference
 
 def make_cast(first_list, second_list):
+	'''maps people from one list to another'''
 	length = equalize_list_length(first_list, second_list) #so below works...
 	cast = {first_list[i]: second_list[i] for i in range(length - 1)}
 	return cast
+
+def get_people_from(text_file): #is this necessary
+	with open(text_file) as f:
+		text = ' '.join(f.readlines()).decode('utf-8')
+		people = people_extractor(text)
+		return people
+
+# def get_indices(token_list, target_list):
+# 	indices = []
+# 	for i in token_list:
+# 		if i in target_list: #if i is a person
+# 			indices.append(token_list.index(i))
+# 	return indices #where people appear
+
+def insert_people(source_file, dest_file, cast_list):
+	'''replaces people in dest_file with 
+	people in source_file, cast_list is a dict'''
+	
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
@@ -55,8 +76,8 @@ if __name__ == '__main__':
 	with args.plot as f:
 		plot_text = ' '.join(f.readlines()).decode('utf-8')
 		plot_list = people_extractor(plot_text)
-
-	most_people = list_frequent(people_list) #list
-	most_plot = list_frequent(plot_list) #list
+	most_people = list_frequent(people_list)
+	most_plot = list_frequent(plot_list)
 	equalize_list_length(most_people, most_plot)
 	cast = make_cast(most_people, most_plot)
+	return insert_people(most_people, most_plot, cast)
