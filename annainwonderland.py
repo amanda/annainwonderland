@@ -43,27 +43,26 @@ def equalize_list_length(first_list, second_list):
 def make_cast(players, roles):
 	'''maps people from one list to another'''
 	length = equalize_list_length(players, roles)
-	cast = {players[i]: roles[i] for i in range(length - 1)}
+	cast = {players[i]: roles[i] for i in range(length)}
 	return cast
 
 def file_tokens(text_file):
 	'''for getting tokens from a text file'''
-	with open(text_file) as f:
+	with open(text_file, 'r') as f:
 		# tokenizer = SpaceTokenizer()
 		# return tokenizer.tokenize(f.read())
 		tokens = word_tokenize(f.read())
 		return tokens
 
-def insert_people(cast_dict, dest_file):
+def insert_people(cast_dict, dest_tokens):
 	'''cast dict keys are roles, value is who plays that role.
-	dest_file must have names of roles/keys.'''
+	dest_tokens must have names of roles/keys.'''
 	players = cast_dict.values()
 	roles = cast_dict.keys()
-	tokens = file_tokens(dest_file)
-	for token in tokens:
+	for token in dest_tokens:
 		if token in roles:
 			token = cast_dict[token]
-	return ' '.join(tokens)
+	return dest_tokens
 
 
 if __name__ == '__main__':
@@ -71,14 +70,14 @@ if __name__ == '__main__':
 	parser.add_argument('people', type=file, help='text file to get names from')
 	parser.add_argument('plot', type=file, help='text to put names in')
 	args = parser.parse_args()
-	with args.people as f:
-		people_text = ' '.join(f.readlines()).decode('utf-8')
-		people_list = people_extractor(people_text)
-	with args.plot as f:
-		plot_text = ' '.join(f.readlines()).decode('utf-8')
-		plot_list = people_extractor(plot_text)
+	print type(args.people)
+	print type(args.plot)
+	people_text = ' '.join((args.people).readlines()).decode('utf-8')
+	people_list = people_extractor(people_text)
+	plot_text = ' '.join((args.plot).readlines()).decode('utf-8')
+	plot_list = people_extractor(plot_text)
 	most_people = list_frequent(people_list)
 	most_plot = list_frequent(plot_list)
 	equalize_list_length(most_people, most_plot)
 	cast = make_cast(most_people, most_plot)
-	print insert_people(cast, args.plot)
+	print insert_people(cast, word_tokenize(args.plot.read()))
