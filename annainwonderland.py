@@ -9,9 +9,9 @@ def people_extractor(text):
 	'''returns a list of people in a text,
 	people are determined by nltk's named entity
 	chunk (ne_chunk) function'''
-	#tokenizer = SpaceTokenizer()
-	#tags = pos_tag(tokenizer.tokenize(text))
-	tags = pos_tag(word_tokenize(text))
+	tokenizer = SpaceTokenizer()
+	tags = pos_tag(tokenizer.tokenize(text))
+	#tags = pos_tag(word_tokenize(text))
 	chunked = ne_chunk(tags) #Tree
 	people = [' '.join(map(lambda x: x[0], entity.leaves())) for entity in chunked 
 					if isinstance(entity, nltk.tree.Tree) and entity.label() == 'PERSON']
@@ -41,7 +41,8 @@ def equalize_list_length(first_list, second_list):
 	return length #for reference
 
 def make_cast(players, roles):
-	'''maps people from one list to another'''
+	'''maps people from one list to another
+	keys are roles (to be replaced), values are players'''
 	length = equalize_list_length(players, roles)
 	cast = {players[i]: roles[i] for i in range(length)}
 	return cast
@@ -49,9 +50,9 @@ def make_cast(players, roles):
 def file_tokens(text_file):
 	'''for getting tokens from a text file'''
 	with open(text_file, 'r') as f:
-		# tokenizer = SpaceTokenizer()
-		# return tokenizer.tokenize(f.read())
-		tokens = word_tokenize(f.read())
+		tokenizer = SpaceTokenizer()
+		return tokenizer.tokenize(f.read())
+		# tokens = word_tokenize(f.read())
 		return tokens
 
 def insert_people(cast_dict, dest_tokens):
@@ -74,5 +75,6 @@ if __name__ == '__main__':
 	most_plot = list_frequent(plot_list)
 	equalize_list_length(most_people, most_plot)
 	cast = make_cast(most_plot, most_people)
-	swapped_list = insert_people(cast, word_tokenize(plot_text))
-	print ' '.join(swapped_list) #maybe SpaceTokenize would fix this
+	tokenizer = SpaceTokenizer()
+	swapped_list = insert_people(cast, tokenizer.tokenize(plot_text))
+	print ' '.join(swapped_list)
