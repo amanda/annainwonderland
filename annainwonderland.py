@@ -75,7 +75,7 @@ if __name__ == '__main__':
 	plot_list = people_extractor(plot_text)
 	most_people = list_frequent(people_list)
 	most_plot = list_frequent(plot_list)
-	equalize_list_length(most_people, most_plot)
+	#equalize_list_length(most_people, most_plot)
 	cast = make_cast(most_plot, most_people)
 	tokenizer = SpaceTokenizer()
 	swapped = insert_people(cast, tokenizer.tokenize(plot_text))
