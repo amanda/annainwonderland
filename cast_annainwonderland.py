@@ -47,15 +47,17 @@ def insert_people(cast_dict, dest_tokens):
 	replaced = [cast_dict.get(x, x) for x in dest_tokens]
 	return replaced
 
+def get_cast_from_user():
+	players = raw_input('enter the names of people you would like to insert into the text, separated by commas: ')
+	return players.split(',')
+
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('people', type=file, help='text file to get names from')
 	parser.add_argument('plot', type=file, help='text to put names in')
-	#parser.add_argument('-l' '--list', action='store_true')
 	args = parser.parse_args()
-	people_text = ' '.join((args.people).readlines()).decode('utf-8')
 	plot_text = ' '.join((args.plot).readlines()).decode('utf-8')
-	people_list = people_extractor(people_text)
+	people_list = get_cast_from_user()
 	plot_list = people_extractor(plot_text)
 	most_people = list_frequent(people_list)
 	most_plot = list_frequent(plot_list)
