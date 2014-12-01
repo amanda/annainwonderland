@@ -19,16 +19,13 @@ def people_extractor(text):
 
 def list_frequent(people_list):
 	'''reorders list by most frequent values'''
-	people_count = dict(Counter(people_list))
-	sorted_count = sorted(people_count.items(), key=operator.itemgetter(1))[::-1]
-	sorted_people = [name for name, value in sorted_count]
+	people_count = Counter(people_list)
+	sorted_count = sorted(people_count.keys(), key=people_count.get, reversed=True)
 	return sorted_people
 
 def make_cast(roles, players):
 	'''maps people from one list to another
 	keys are roles (to be replaced), values are players'''
-	#length = equalize_list_length(roles, players)
-	#cast = {roles[i]: players[i] for i in range(length)}
 	zipped = zip(roles, players) #list of tuples
 	cast = dict(zipped)
 	return cast
@@ -38,8 +35,6 @@ def file_tokens(text_file):
 	with open(text_file, 'r') as f:
 		tokenizer = SpaceTokenizer()
 		return tokenizer.tokenize(f.read())
-		# tokens = word_tokenize(f.read())
-		return tokens
 
 def insert_people(cast_dict, dest_tokens):
 	'''cast dict keys are roles, value is who plays that role.
@@ -49,8 +44,7 @@ def insert_people(cast_dict, dest_tokens):
 
 def get_cast_from_user():
 	players = raw_input('enter the names of people you would like to insert into the text, separated by commas: ')
-	return players.split(',')
-
+	return [x.strip() for x in players]
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
