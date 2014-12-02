@@ -23,7 +23,7 @@ def list_frequent(people_list):
 def make_cast(roles, players):
 	'''maps people from one list to another
 	keys are roles (to be replaced), values are players'''
-	zipped = zip(roles, players) #list of tuples
+	zipped = zip(roles, players)
 	cast = dict(zipped)
 	return cast
 
@@ -55,12 +55,12 @@ if __name__ == '__main__':
 		people_list = get_cast_from_user()
 	else:
 		people_list = args.list.read().split(',') #hacky for list of hacker schoolers
-		print people_list
 	plot_list = people_extractor(plot_text)
 	most_people = list_frequent(people_list)
-	print most_people
 	most_plot = list_frequent(plot_list)
 	cast = make_cast(most_plot, most_people)
 	tokenizer = SpaceTokenizer()
 	swapped = insert_people(cast, tokenizer.tokenize(plot_text))
 	print ' '.join(swapped)
+	with open('output/{0}_swapped.txt'.format(args.plot.name[:-4]), 'w') as f:
+		f.write(' '.join(swapped))
