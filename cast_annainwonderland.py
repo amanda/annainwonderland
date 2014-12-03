@@ -1,3 +1,7 @@
+'''put your friends in classic works of literature.
+warning: this will take a really long time for books 
+in its current state! but it "works" (poorly).
+todo: fix output punc and newlines...'''
 import argparse
 import nltk
 from nltk import pos_tag, ne_chunk, word_tokenize
@@ -69,8 +73,12 @@ if __name__ == '__main__':
 	most_plot = list_frequent(plot_list)
 	cast = make_cast(most_plot, most_people)
 	print cast
-	swapped = insert_people(cast, tokenize_those_chunks(ne_chunk(pos_tag(word_tokenize(plot_text)))))
-	print ' '.join(swapped)
+	try:
+		tags = pos_tag(word_tokenize(plot_text))
+		swapped = insert_people(cast, tokenize_those_chunks(ne_chunk(tags)))
+	except UnicodeEncodeError:
+		print "try another book :'("
+	#print ' '.join(swapped)
 	with open('output/{0}_swapped.txt'.format(args.plot.name[:-4]), 'w') as f: #careful, will overwrite
 		f.write(' '.join(swapped))
 
