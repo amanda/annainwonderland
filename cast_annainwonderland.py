@@ -72,7 +72,7 @@ if __name__ == '__main__':
 		swapped = insert_people(cast, tokenize_chunks(ne_chunk(tags)))
 	except UnicodeEncodeError:
 		print "working on it!"
-	print ' '.join(swapped)
+	#print ' '.join(swapped)
 	output_file = '{0}_swapped.txt'.format(args.plot.name[:-4])
 	with open(output_file, 'w') as f: #careful, will overwrite
 		f.write(' '.join(swapped))
