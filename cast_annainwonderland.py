@@ -1,12 +1,14 @@
 '''put your friends in classic works of literature.
 warning: this will take a really long time for books 
 in its current state! but it "works" (poorly).
-todo: fix output punc and newlines...'''
+todo: fix output punct and newlines...'''
 import argparse
 import nltk
 from nltk import pos_tag, ne_chunk, word_tokenize
 from nltk.tokenize import SpaceTokenizer
 from collections import Counter
+import os.path
+import os
 
 def people_extractor(text):
 	'''returns a list of people in a text,
@@ -63,7 +65,8 @@ if __name__ == '__main__':
 	parser.add_argument('plot', type=file, help='text to put names in')
 	parser.add_argument('-l', '--list', type=file, nargs='?', help='optional input list')
 	args = parser.parse_args()
-	plot_text = ' '.join((args.plot).readlines()).decode('utf-8')
+	#plot_text = ' '.join((args.plot).readlines()).decode('utf-8')
+	plot_text = args.plot.read().decode('utf-8')
 	if not args.list:
 		people_list = get_cast_from_user()
 	else:
@@ -77,8 +80,9 @@ if __name__ == '__main__':
 		tags = pos_tag(word_tokenize(plot_text))
 		swapped = insert_people(cast, tokenize_those_chunks(ne_chunk(tags)))
 	except UnicodeEncodeError:
-		print "try another book :'("
-	#print ' '.join(swapped)
-	with open('output/{0}_swapped.txt'.format(args.plot.name[:-4]), 'w') as f: #careful, will overwrite
+		print "working on it!"
+	print ' '.join(swapped)
+	output_file = '{0}_swapped.txt'.format(args.plot.name[:-4])
+	with open(output_file, 'w') as f: #careful, will overwrite
 		f.write(' '.join(swapped))
 
