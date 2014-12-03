@@ -5,17 +5,15 @@ todo: fix output punct and newlines...'''
 import argparse
 import nltk
 from nltk import pos_tag, ne_chunk, word_tokenize
-from nltk.tokenize import SpaceTokenizer
 from collections import Counter
 import os.path
 import os
 
-def people_extractor(text):
+def people_extractor(tokens, pos_tags):
 	'''returns a list of people in a text,
 	people are determined by nltk's named entity
 	chunk (ne_chunk) function'''
-	tags = pos_tag(word_tokenize(text))
-	chunked = ne_chunk(tags) #Tree
+	chunked = ne_chunk(pos_tags) #Tree
 	people = [' '.join(map(lambda x: x[0], entity.leaves())) for entity in chunked 
 					if isinstance(entity, nltk.tree.Tree) and entity.label() == 'PERSON']
 	return people
@@ -33,20 +31,13 @@ def make_cast(roles, players):
 	cast = dict(zipped)
 	return cast
 
-def file_tokens(text_file):
-	'''for getting tokens from a text file
-	using nltk's SpaceTokenizer'''
-	with open(text_file, 'r') as f:
-		tokenizer = SpaceTokenizer()
-		return tokenizer.tokenize(f.read())
-
 def insert_people(cast_dict, dest_tokens): #dest_tokens must match ne_chunk
 	'''cast dict keys are roles, value is who plays that role.
 	dest_tokens must have names of roles/keys.'''
 	replaced = [cast_dict.get(x, x) for x in dest_tokens]
 	return replaced
 
-def tokenize_those_chunks(chunked):
+def tokenize_chunks(chunked):
 	treewords = []
 	for chunk in chunked:
 		if isinstance(chunk, nltk.tree.Tree):
@@ -65,20 +56,20 @@ if __name__ == '__main__':
 	parser.add_argument('plot', type=file, help='text to put names in')
 	parser.add_argument('-l', '--list', type=file, nargs='?', help='optional input list')
 	args = parser.parse_args()
-	#plot_text = ' '.join((args.plot).readlines()).decode('utf-8')
-	plot_text = args.plot.read().decode('utf-8')
+	plot_text = args.plot.read()
 	if not args.list:
 		people_list = get_cast_from_user()
 	else:
 		people_list = args.list.read().split(',') #hacky for list of hacker schoolers
-	plot_list = people_extractor(plot_text)
+	tokens = word_tokenize(plot_text)
+	tags = pos_tag(tokens)
+	plot_list = people_extractor(tokens, tags)
 	most_people = list_frequent(people_list)
 	most_plot = list_frequent(plot_list)
 	cast = make_cast(most_plot, most_people)
 	print cast
 	try:
-		tags = pos_tag(word_tokenize(plot_text))
-		swapped = insert_people(cast, tokenize_those_chunks(ne_chunk(tags)))
+		swapped = insert_people(cast, tokenize_chunks(ne_chunk(tags)))
 	except UnicodeEncodeError:
 		print "working on it!"
 	print ' '.join(swapped)
