@@ -34,11 +34,20 @@ def file_tokens(text_file):
 		tokenizer = SpaceTokenizer()
 		return tokenizer.tokenize(f.read())
 
-def insert_people(cast_dict, dest_tokens):
+def insert_people(cast_dict, dest_tokens): #dest_tokens must match ne_chunk
 	'''cast dict keys are roles, value is who plays that role.
 	dest_tokens must have names of roles/keys.'''
 	replaced = [cast_dict.get(x, x) for x in dest_tokens]
 	return replaced
+
+def tokenize_those_chunks(chunked):
+	treewords = []
+	for chunk in chunked:
+		if isinstance(chunk, nltk.tree.Tree):
+			treewords.append(' '.join([x[0] for x in chunk.leaves()]))
+		else:
+			treewords.append(chunk[0])
+	return treewords #maintains people entities as tokens
 
 def get_cast_from_user():
 	'''for easy user input'''
@@ -59,8 +68,9 @@ if __name__ == '__main__':
 	most_people = list_frequent(people_list)
 	most_plot = list_frequent(plot_list)
 	cast = make_cast(most_plot, most_people)
-	tokenizer = SpaceTokenizer()
-	swapped = insert_people(cast, tokenizer.tokenize(plot_text))
+	print cast
+	swapped = insert_people(cast, tokenize_those_chunks(ne_chunk(pos_tag(word_tokenize(plot_text)))))
 	print ' '.join(swapped)
-	with open('output/{0}_swapped.txt'.format(args.plot.name[:-4]), 'w') as f:
+	with open('output/{0}_swapped.txt'.format(args.plot.name[:-4]), 'w') as f: #careful, will overwrite
 		f.write(' '.join(swapped))
+
