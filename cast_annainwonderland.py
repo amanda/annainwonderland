@@ -1,4 +1,4 @@
-'''put your friends in classic works of literature.
+'''put new people in classic works of literature.
 warning: this will take a really long time for books 
 in its current state! but it "works" (poorly).
 todo: fix output punct and newlines...'''
@@ -76,4 +76,3 @@ if __name__ == '__main__':
 	output_file = '{0}_swapped.txt'.format(args.plot.name[:-4])
 	with open(output_file, 'w') as f: #careful, will overwrite
 		f.write(' '.join(swapped))
-
