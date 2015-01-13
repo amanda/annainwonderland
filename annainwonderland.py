@@ -30,18 +30,6 @@ def get_cast_from_user():
 	players = raw_input('enter the names of people you would like to insert into the text, separated by commas: ')
 	return [x.strip() for x in players.split(',')]
 
-
-def people_replacer(textfile, cast_dict):
-	'''textfile, list -> new textfile 
-	with new people inserted'''
-	p = re.compile('|'.join(re.escape(x) for x in cast_dict))
-	filename, ext = os.path.splitext(textfile)
-	swapped_file = filename + '-swapped' + ext
-	with codecs.open(textfile, 'r', encoding='utf-8') as infile:
-		with codecs.open(swapped_file, 'w') as outfile:
-			for line in infile:
-				outfile.write(p.sub(repl(cast_dict), line))
-
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('plot', help='text to put names in')
@@ -75,5 +63,4 @@ if __name__ == '__main__':
 		with codecs.open(swapped_file, 'w') as outfile:
 			for line in infile:
 				outfile.write(p.sub(repl, line))
-	#people_replacer(args.plot, cast)
 	print 'done'
