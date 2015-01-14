@@ -1,6 +1,6 @@
 #!/bin/env python
 
-import argparse, os, os.path, pickle, codecs, nltk, re
+import argparse, os, os.path, codecs, nltk, re
 from nltk import pos_tag, ne_chunk, word_tokenize
 from collections import Counter
 
@@ -33,19 +33,19 @@ def get_cast_from_user():
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('plot', help='text to put names in')
-	parser.add_argument('-l', '--list', type=file, nargs='?', help='optional input list')
+	parser.add_argument('-l', '--list', nargs='?', help='optional input list')
 	args = parser.parse_args()
 	if not args.list:
 		people_list = get_cast_from_user()
 	else:
-		people_list = args.list.read().split(',') #hacky for list of hacker schoolers
+		with codecs.open(args.list, encoding='utf-8') as f:
+			people_list = f.read().split(',') #hacky for list of hacker schoolers
 	
 	print 'inserting your characters...'
 
-	with open(args.plot) as f:
+	with codecs.open(args.plot, encoding='utf-8') as f:
 		tags = pos_tag(word_tokenize(f.read()))
 	plot_list = people_extractor(tags)
-	print 'plot list: {}'.format(plot_list)
 	most_people = list_frequent(people_list)
 	most_plot = list_frequent(plot_list)
 	cast = make_cast(most_plot, most_people)
@@ -58,9 +58,8 @@ if __name__ == '__main__':
 	
 	filename, ext = os.path.splitext(args.plot)
 	swapped_file = filename + '-swapped' + ext
-	
 	with codecs.open(args.plot, 'r', encoding='utf-8') as infile:
-		with codecs.open(swapped_file, 'w') as outfile:
+		with codecs.open(swapped_file, 'w', encoding='utf-8') as outfile:
 			for line in infile:
 				outfile.write(p.sub(repl, line))
 	print 'done'
