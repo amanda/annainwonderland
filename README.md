@@ -5,6 +5,9 @@ anna karenina in wonderland: takes people entities from one text and swaps them 
 
 ## usage
 
-python annainwonderland.py sourcetextfile [-l text file list of people to insert]
+run the script and it will prompt you for the names of people to insert, or (optional) run using a list of people in a text file separated by newlines:
 
-a file called 'sourcetextfile-swapped' will appear in the current directory with your new people inserted.
+```py
+python annainwonderland.py sourcetextfile [-l listfile]```
+
+a file called 'sourcetextfile-swapped.txt' will appear in the current directory with your new people inserted.
